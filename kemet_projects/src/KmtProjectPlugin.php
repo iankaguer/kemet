@@ -43,10 +43,11 @@ class KmtProjectPlugin
         }
     }
 
-    public function crud_operations(){
-        self::plugin_activation();
+    public function crud_operations(): void
+    {
+        $this->plugin_activation();
         global $wpdb;
-        $table_name = $wpdb->prefix .'kmtproject_projects';
+        $table_name = $wpdb->prefix .'kemet_projects';
         $charset_collate = $wpdb->get_charset_collate();
         $sql = "CREATE TABLE IF NOT EXISTS `wp_kemet_projects` (
             `id` int(20) NOT NULL AUTO_INCREMENT,
