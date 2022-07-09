@@ -1,0 +1,17 @@
+{
+    "name": "ianka/kemet_projects",
+    "type": "wordpress-plugin",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/",
+            "App\\Controllers\\": "src/controllers/"
+        }
+    },
+    "authors": [
+        {
+            "name": "iankaguer",
+            "email": "36267404+iankaguer@users.noreply.github.com"
+        }
+    ],
+    "require": {}
+}
