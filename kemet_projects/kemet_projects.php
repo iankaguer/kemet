@@ -68,10 +68,12 @@ function kemet_rea(){
             }
             .kemet-slide-text h4{
                 font-size: 1.4em;
+                color: #DBA80A;
                 margin: 0;
             }
             .kemet-slide-text p{
                 font-size: 1em;
+                
                 margin: .5em;
             }
             .kemet-slide-index {
@@ -220,9 +222,9 @@ function kemet_rea(){
             <?php endforeach; ?>
         </div>
     </div>
-    <div class='kemet-showme' id='kemet-showme' style="height: 450px; width: 600px;">
+    <div class='kemet-showme' id='kemet-showme' style="height: 450px; margin-top: 1em;">
     </div>
-    //load script javascript
+    
     <script>
         function docReady(fn) {
             // see if DOM is already available
@@ -465,11 +467,13 @@ function kemet_3d(){
 
         .kemet-slide-text h4 {
             font-size: 1.4em;
+            color: #DBA80A;
             margin: 0;
         }
 
         .kemet-slide-text p {
             font-size: 1em;
+            color: #ffffff;
             margin: .5em;
         }
 
@@ -638,9 +642,9 @@ function kemet_3d(){
 			<?php endforeach; ?>
         </div>
     </div>
-    <div class='kemet-showme' id='kemet-showme' style="height: 450px; width: 600px;">
+    <div class='kemet-showme' id='kemet-showme' style="height: 450px; margin-top: 1em;">
     </div>
-    //load script javascript
+    
     <script>
         function docReady(fn) {
             // see if DOM is already available
@@ -882,11 +886,13 @@ function kemet_design(){
 
         .kemet-slide-text h4 {
             font-size: 1.4em;
+            color: #DBA80A;
             margin: 0;
         }
 
         .kemet-slide-text p {
             font-size: 1em;
+            color: #ffffff;
             margin: .5em;
         }
 
@@ -1055,9 +1061,9 @@ function kemet_design(){
 			<?php endforeach; ?>
         </div>
     </div>
-    <div class='kemet-showme' id='kemet-showme' style="height: 450px; width: 600px;">
+    <div class='kemet-showme' id='kemet-showme' style="height: 450px; margin-top: 1em;">
     </div>
-    //load script javascript
+    
     <script>
         function docReady(fn) {
             // see if DOM is already available
@@ -1299,11 +1305,13 @@ function kemet_proj(){
 
         .kemet-slide-text h4 {
             font-size: 1.4em;
+            color: #DBA80A;
             margin: 0;
         }
 
         .kemet-slide-text p {
             font-size: 1em;
+            color: #ffffff;
             margin: .5em;
         }
 
@@ -1472,9 +1480,9 @@ function kemet_proj(){
 			<?php endforeach; ?>
         </div>
     </div>
-    <div class='kemet-showme' id='kemet-showme' style="height: 450px; width: 600px;">
+    <div class='kemet-showme' id='kemet-showme' style="height: 450px; margin-top: 1em;">
     </div>
-    //load script javascript
+    
     <script>
         function docReady(fn) {
             // see if DOM is already available
