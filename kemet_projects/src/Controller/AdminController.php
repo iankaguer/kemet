@@ -19,7 +19,7 @@ class AdminController{
         add_action('admin_menu', array($this, 'admin_menu'));
         add_action('admin_init', array($this, 'admin_init'));
         add_action('admin_action_project_new', array($this, 'admin_action_project_new'));
-	    add_shortcode('kemet_realisation', 'kemet_rea');
+	    //add_shortcode('kemet_realisation', 'kemet_rea');
 
     }
 
@@ -27,7 +27,7 @@ class AdminController{
        // add_options_page('KmtProject', 'Kemet Projects', 'manage_options', 'kmtproject', array($this, 'config_page'));
         add_menu_page('KmtProjectList', 'Kemet Projects', 'manage_options', 'kmtproject', array($this, 'kmtproject_action_list'), 'dashicons-admin-generic');
         //add a new link to page
-	    add_shortcode('kemet_realisation', 'kemet_rea');
+	    
         add_submenu_page('kmtproject', 'Add new project', 'New Project', 'manage_options', 'kmtproject_new', array($this, 'admin_action_project_new'));
     }
 
@@ -40,8 +40,10 @@ class AdminController{
         add_settings_section('kmtproject_section', null, null, 'kmtproject_action');
         
         add_settings_field('redirect_to', 'Kemet Projects', array($this, 'redirect_render'), 'kmtproject', 'kmtproject_section');
-        add_settings_field('admin_action_project_new', 'Add a Projecs', array($this, 'admin_action_project_new'), 'admin_action_project_new', '');
+	    add_settings_field('admin_action_project_new', 'Add a Projecs', array($this, 'admin_action_project_new'), 'admin_action_project_new', '');
     }
+    
+ 
 
     public function redirect_render( $redirect_to, $request, $user ){
         $general_options = get_option('kmtproject_options', [
@@ -65,6 +67,11 @@ class AdminController{
     public function kmtproject_action_list(){
         global $wpdb;
         $table_name = $wpdb->prefix . 'kemet_projects';
+        
+        if (isset($_GET['delete'])) {
+            $wpdb->query("DELETE FROM $table_name WHERE id = " . $_GET['delete']);
+            wp_redirect(self::REDIRECT_LIST_PAGE);
+        }
 
         $result = $wpdb->get_results("SELECT * FROM $table_name");
 
@@ -101,8 +108,8 @@ class AdminController{
                             <td><?= $row->img5 ?></td>
                             <td><?= $row->created ?></td>
                             <td>
-                                <a href="admin.php?page=kemet_projects_edit&id=<?= $row->id ?>">Edit</a>
-                                <a href="admin.php?page=kemet_projects_delete&id=<?= $row->id ?>">Delete</a>
+                                <!--a href="admin.php?page=kemet_projects_edit&id=<?= $row->id ?>">Edit</a-->
+                                <a href="admin.php?page=kmtproject&delete=<?= $row->id ?>">Delete</a>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -146,7 +153,12 @@ class AdminController{
             </div>
             <div class="form-group">
                 <label for="description">description</label>
-                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                <select name="description" id="description" class="form-control">
+                    <option value="designinterieur">Design interieur</option>
+                    <option value="projet">Projets</option>
+                    <option value="montage3d">Montage 3d</option>
+                </select>
+                
             </div>
             <div class="form-group">
                 <label for="localisation">localisation</label>
@@ -218,39 +230,7 @@ class AdminController{
         
     }
     
-    public function kemet_rea(){
-	    global $wpdb;
-	    $table_name = $wpdb->prefix . 'kemet_projects';
-	
-	    $result = $wpdb->get_results("SELECT * FROM $table_name");
-	    ob_start();
-        ?>
-        
-        <style>
-            .kemet-project-content{
-                display: flex;
-                flex-direction: column;
-                align-items: baseline;
-            }
-            .kemet-realisation{
-                display: flex;
-            }
-            
-        </style>
-        <div class="kemet-realisation">
-        <?php  foreach ($result as $project) : ?>
-            <div class="kemet-project">
-                <div class="kemet-project-content">
-                    <h2><?php echo $project->name; ?></h2>
-                    <p><?php echo $project->localisation; ?></p>
-                </div>
-            </div>
-     <?php endforeach; ?>
-        </div>
-	
-    <?php
-	    return ob_get_clean();
-    }
+
     
  
 }
