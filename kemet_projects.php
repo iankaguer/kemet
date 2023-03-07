@@ -6,8 +6,8 @@
 /*
 Plugin Name: kemet projects
 Plugin URI: https://github.com/iankaguer/kemet
-Description: my frist plugin • kemet projects . This is a simple plugin to create a projects table in the database. It also allows you to add, edit, delete and display projects. made 4 Kemet_Studio.
-Author: ian kaguer
+Description: my first wp plugin • kemet projects . This is a simple plugin to create a projects table in the database. It also allows you to add, edit, delete and display projects. made 4 Kemet_Studio.
+Author: @iankaguer
 Version: 1.0
 Author URI: "https://github.com/iankaguer"
 */
