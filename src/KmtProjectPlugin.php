@@ -18,13 +18,13 @@ class KmtProjectPlugin
         }
     }
 
-    public function plugin_activation()
+    public function plugin_activation(): void
     {
         set_transient('kmtplugin_notice_activation', true);
 
     }
 
-    public function notice_activation()
+    public function notice_activation(): void
     {
         if (get_transient('kmtplugin_notice_activation')) {
             self::render('notices', [

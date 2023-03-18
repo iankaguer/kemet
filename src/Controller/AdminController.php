@@ -27,35 +27,42 @@ class AdminController
     }
 
 
-    public function admin_menu()
+    public function admin_menu(): void
     {
         // add_options_page('KmtProject', 'Kemet Projects', 'manage_options', 'kmtproject', array($this, 'config_page'));
-        add_menu_page('KmtProjectList', 'Kemet Projects', 'manage_options', 'kmtproject', array($this, 'kmtproject_action_list'), 'dashicons-admin-generic');
+        add_menu_page(
+            'KmtProjectList',
+            'Kemet Projects',
+            'manage_options',
+            'kmtproject',
+            array($this, 'kmtproject_action_list'),
+            'dashicons-admin-generic'
+        );
         //add a new link to page
 
         add_submenu_page(
-                'kmtproject',
-                'Add new project',
-                'New Project',
-                'manage_options',
-                'kmtproject_new',
-                array($this, 'admin_action_project_new')
+            'kmtproject',
+            'Add new project',
+            'New Project',
+            'manage_options',
+            'kmtproject_new',
+            array($this, 'admin_action_project_new')
         );
         add_submenu_page(
-                'kmtproject',
-                'Project groups',
-                'Project groups',
-                'manage_options',
-                'admin_action_project_groups',
-                array($this, 'admin_action_project_groups')
+            'kmtproject',
+            'Project groups',
+            'Project groups',
+            'manage_options',
+            'admin_action_project_groups',
+            array($this, 'admin_action_project_groups')
         );
         add_submenu_page(
-                'kmtproject',
-                'Detailled projects',
-                'New project\'s group',
-                'manage_options',
-                'admin_action_new_project_group',
-                array($this, 'admin_action_new_project_group')
+            'kmtproject',
+            'Detailled projects',
+            'New project\'s group',
+            'manage_options',
+            'admin_action_new_project_group',
+            array($this, 'admin_action_new_project_group')
         );
         add_submenu_page(
             'kmtproject',
@@ -75,12 +82,12 @@ class AdminController
         );
     }
 
-    public function config_page()
+    public function config_page(): void
     {
         KmtProjectPlugin::render('config');
     }
 
-    public function admin_init()
+    public function admin_init(): void
     {
         register_setting('kmtproject_options', 'kmtproject_options');
         add_settings_section('kmtproject_section', null, null, 'kmtproject_action');
@@ -93,7 +100,7 @@ class AdminController
     }
 
 
-    public function redirect_render($redirect_to, $request, $user)
+    public function redirect_render(): void
     {
         $general_options = get_option('kmtproject_options', [
             'redirect_to' => 0
@@ -111,17 +118,21 @@ class AdminController
 
     }
 
-    public function kmtproject_action_list()
+    public function kmtproject_action_list(): void
     {
         global $wpdb;
         $table_name = $wpdb->prefix . 'kemet_projects';
+        $table_name1 = $wpdb->prefix . 'kemet_projects_groups';
 
         if (isset($_GET['delete'])) {
             $wpdb->query("DELETE FROM $table_name WHERE id = " . $_GET['delete']);
             wp_redirect(self::REDIRECT_LIST_PAGE);
         }
 
-        $result = $wpdb->get_results("SELECT * FROM $table_name");
+        $result = $wpdb->get_results("SELECT t1.*, t2.title 
+                FROM $table_name t1
+                INNER JOIN $table_name1 t2 ON t1.group_id = t2.id
+                ");
 
         ?>
 
@@ -133,28 +144,35 @@ class AdminController
                 <tr>
                     <th class="manage-column column-title column-primary">Title</th>
                     <th class="manage-column column-title">Description</th>
-                    <th class="manage-column column-title">Localisation</th>
-                    <th class="manage-column column-title">Image principale</th>
-                    <th class="manage-column column-title">Image 2</th>
-                    <th class="manage-column column-title">Image 3</th>
-                    <th class="manage-column column-title">Image 4</th>
-                    <th class="manage-column column-title">Image 5</th>
-                    <th class="manage-column column-title">Date creation</th>
+                    <th class="manage-column column-title">Main Image</th>
+                    <th class="manage-column column-title">Other images</th>
                     <th class="manage-column column-title">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php foreach ($result as $row): ?>
                     <tr>
-                        <td><?= $row->name ?></td>
+                        <td>
+                            <div>Name : <strong><?= $row->name ?></strong></div>
+                            <div>Location : <strong><?= $row->localisation ?></strong></div>
+                            <div>Start Date : <strong><?= $row->date ?></strong></div>
+                            <div>Client : <strong><?= $row->client ?></strong></div>
+                            <div>Size : <strong><?= $row->taille ?></strong></div>
+                            <div>Group : <strong><?= $row->title ?></strong></div>
+                            <div>Created : <strong><?= $row->created ?></strong></div>
+
+                        </td>
                         <td><?= $row->description ?></td>
-                        <td><?= $row->localisation ?></td>
-                        <td><img src="<?= $row->img1 ?>" style="width: 100px; height: auto;"/></td>
-                        <td><?= $row->img2 ?></td>
-                        <td><?= $row->img3 ?></td>
-                        <td><?= $row->img4 ?></td>
-                        <td><?= $row->img5 ?></td>
-                        <td><?= $row->created ?></td>
+                        <td><img src="<?= $row->img1 ?>" style="width: 100px; height: auto;" alt=""/></td>
+                        <td>
+                            <img src="<?= $row->img2 ?>" style='width: 50px; height: auto;' alt=""/>
+                            <img src="<?= $row->img3 ?>" style='width: 50px; height: auto;' alt=""/>
+                            <img src="<?= $row->img4 ?>" style='width: 50px; height: auto;' alt=""/>
+                            <img src="<?= $row->img5 ?>" style='width: 50px; height: auto;' alt=""/>
+                            <img src="<?= $row->img6 ?>" style='width: 50px; height: auto;' alt=""/>
+                            <img src="<?= $row->img7 ?>" style='width: 50px; height: auto;' alt=""/>
+                        </td>
+
                         <td>
                             <!--a href="admin.php?page=kemet_projects_edit&id=<?= $row->id ?>">Edit</a-->
                             <a href="admin.php?page=kmtproject&delete=<?= $row->id ?>">Delete</a>
@@ -221,13 +239,17 @@ class AdminController
     {
         global $wpdb;
         $table_name = $wpdb->prefix . 'kemet_projects_groups';
+        $table_name2 = $wpdb->prefix . 'kemet_projects_categories';
 
         if (isset($_GET['delete'])) {
             $wpdb->query("DELETE FROM $table_name WHERE id = " . $_GET['delete']);
             wp_redirect(self::REDIRECT_LiST_DETAILLED);
         }
 
-        $results = $wpdb->query("SELECT * FROM $table_name", ARRAY_A);
+        $results = $wpdb->get_results("SELECT t1.*, t2.title as menu 
+                FROM $table_name t1
+                INNER JOIN $table_name2 t2 ON t1.menu_id = t2.id
+                ", ARRAY_A);
         ?>
 
         <div class="wrap">
@@ -238,7 +260,9 @@ class AdminController
                 <tr>
                     <th class="manage-column column-title column-primary">Title</th>
                     <th class="manage-column column-title">Description</th>
-                    <th class="manage-column column-title">Couverture</th>
+                    <th class='manage-column column-title'>Menu</th>
+                    <th class='manage-column column-title'>Couverture</th>
+
                     <th class="manage-column column-title">Création</th>
                     <th class="manage-column column-title"></th>
                 </tr>
@@ -248,7 +272,8 @@ class AdminController
                     <tr>
                         <td><?= $resultat['title'] ?></td>
                         <td><?= $resultat['description'] ?></td>
-                        <td> <img src="<?= $resultat['cover'] ?>" style='width: 100px; height: auto;'/></td>
+                        <td><?= $resultat['menu'] ?></td>
+                        <td><img src="<?= $resultat['cover'] ?>" style='width: 100px; height: auto;' alt=""/></td>
                         <td><?= $resultat['created'] ?></td>
                         <td>
                             <a class='button' href="admin.php?page=admin_action_project_detaille&delete=<?= $resultat['id'] ?>">Delete</a>
@@ -265,102 +290,6 @@ class AdminController
         <?php
     }
 
-    function add_image_pd()
-    {
-        //get url var
-        $id = $_GET['id'];
-        ?>
-        <style>
-
-            .form-group input {
-                width: 40%;
-            }
-
-            .form-group {
-                margin: 5px;
-                display: flex;
-            }
-
-            .form-group label {
-                margin: 5px;
-                text-transform: capitalize;
-            }
-        </style>
-
-        <form action='' enctype='multipart/form-data' method='post'>
-            <div class='wrap'>
-                <h1>Kemet Projects</h1>
-                <input type='hidden' name='project_id' id='project_id'
-                       value="<?php echo $id; ?>"/>
-                <input type='hidden' name='form_type' value='ajout'
-                <div class='form-group'>
-                    <label for='img1'>image 1</label>
-                    <input type='file' class='form-control' id='img1' name='img1' placeholder='img1' required>
-                    <?php wp_nonce_field(plugin_basename(__FILE__), 'img1'); ?>
-                </div>
-                <div class="form-group">
-                    <label for="img2">image 2</label>
-                    <input type="file" class="form-control" id="img2" name="img2" placeholder="img2">
-                    <?php wp_nonce_field(plugin_basename(__FILE__), 'img2'); ?>
-                </div>
-                <div class="form-group">
-                    <label for="img3">image 3</label>
-                    <input type="file" class="form-control" id="img3" name="img3" placeholder="img3">
-                    <?php wp_nonce_field(plugin_basename(__FILE__), 'img3'); ?>
-                </div>
-                <div class="form-group">
-                    <label for="img4">image 4</label>
-                    <input type="file" class="form-control" id="img4" name="img4" placeholder="img4">
-                    <?php wp_nonce_field(plugin_basename(__FILE__), 'img4'); ?>
-                </div>
-                <div class="form-group">
-                    <label for="img5">image 5</label>
-                    <input type="file" class="form-control" id="img5" name="img5" placeholder="img5">
-                    <?php wp_nonce_field(plugin_basename(__FILE__), 'img5'); ?>
-                </div>
-
-
-                <button type="submit" class="button button-primary">Enregistrer</button>
-            </div>
-        </form>
-        <?php
-
-        if (isset($_POST['form_type']) && ($_POST['form_type'] === 'ajout')) {
-            //die(json_encode($_POST));
-            global $wpdb;
-            $table_name2 = $wpdb->prefix . 'kemet_projects_detailles_images';
-
-            $project_id = $_POST['project_id'];
-
-            $img1_file = $_FILES['img1'];
-            $img2_file = $_FILES['img2'];
-            $img3_file = $_FILES['img3'];
-            $img4_file = $_FILES['img4'];
-            $img5_file = $_FILES['img5'];
-
-            //upload images
-            $img1_url = wp_upload_bits($img1_file['name'], null, file_get_contents($img1_file['tmp_name']))['url'];
-            $img4_url = ($img4_file['name'] !== '' && $img4_file !== null) ? wp_upload_bits($img4_file['name'], null, file_get_contents($img4_file['tmp_name']))['url'] : '';
-            $img5_url = ($img5_file['name'] !== '' && $img5_file !== null) ? wp_upload_bits($img5_file['name'], null, file_get_contents($img5_file['tmp_name']))['url'] : '';
-            $img2_url = ($img2_file['name'] !== '' && $img2_file !== null) ? wp_upload_bits($img2_file['name'], null, file_get_contents($img2_file['tmp_name']))['url'] : '';
-            $img3_url = ($img3_file['name'] !== '' && $img3_file !== null) ? wp_upload_bits($img3_file['name'], null, file_get_contents($img3_file['tmp_name']))['url'] : '';
-
-
-            //add project to db
-
-            //create array of images
-            $images = array($img1_url, $img2_url, $img3_url, $img4_url, $img5_url);
-
-            //add images to db
-            foreach ($images as $image) {
-                if ($image !== '') {
-                    $wpdb->insert($table_name2, ['id_project' => $project_id, 'img' => $image]);
-                }
-            }
-            echo "<script>location.replace('admin.php?page=admin_action_project_detaille');</script>";
-
-        }
-    }
 
     public function admin_action_project_menu_new()
     {
@@ -388,7 +317,7 @@ class AdminController
             }
         </style>
 
-        <form action=""  method="post">
+        <form action="" method="post">
             <div class="wrap">
                 <h1>Kemet Projects</h1>
 
@@ -409,13 +338,12 @@ class AdminController
         <?php
         if (isset($_POST['form_type']) && ($_POST['form_type'] === 'ajout')) {
             global $wpdb;
-            $table_name =  $wpdb->prefix . 'kemet_projects_categories';
+            $table_name = $wpdb->prefix . 'kemet_projects_categories';
 
             $title = $_POST['title'];
 
             //remove special characters, spaces, replace accent by simple letter and make lowercase
             $shortCode = strtolower(str_replace(' ', '_', preg_replace('/[^A-Za-z0-9\-]/', '', remove_accents($title))));
-
 
 
             $wpdb->query("INSERT INTO $table_name
@@ -458,10 +386,12 @@ class AdminController
                 margin: 5px;
                 text-transform: capitalize;
             }
-            .gr-6{
+
+            .gr-6 {
                 width: 50%;
             }
-            .form-control-img{
+
+            .form-control-img {
                 justify-content: space-between;
                 padding: 5px;
             }
@@ -546,9 +476,6 @@ class AdminController
                         </div>
                     </div>
                 </div>
-
-
-
 
 
                 <button type="submit" class="button button-primary">Enregistrer</button>
