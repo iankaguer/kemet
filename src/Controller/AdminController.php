@@ -33,13 +33,46 @@ class AdminController
         add_menu_page('KmtProjectList', 'Kemet Projects', 'manage_options', 'kmtproject', array($this, 'kmtproject_action_list'), 'dashicons-admin-generic');
         //add a new link to page
 
-        add_submenu_page('kmtproject', 'Add new project', 'New Project', 'manage_options', 'kmtproject_new', array($this, 'admin_action_project_new'));
-        add_submenu_page('kmtproject', 'Project groups', 'Project groups', 'manage_options', 'admin_action_project_groups', array($this, 'admin_action_project_groups'));
-        add_submenu_page('kmtproject', 'Detailled projects', 'New project\'s group', 'manage_options', 'admin_action_new_project_group', array($this, 'admin_action_new_project_group'));
-        //add_submenu_page( '', 'add_image_project_detaille', 'add_image_project_detaille', 'manage_options', 'add_image_pd', array($this, 'add_image_pd') );
-
-        /*add_submenu_page( 'dev7d-father','Daktarai','Daktarai', 'manage_options' , 'dev7d-sub-doctors', 'doctors_options');
-        add_submenu_page( 'dev7d-sub-doctors','Daktarų redagavimas','Daktarų redagavimas', 'manage_options' , 'dev7d-sub-doctors-edit', 'doctors_edit');*/
+        add_submenu_page(
+                'kmtproject',
+                'Add new project',
+                'New Project',
+                'manage_options',
+                'kmtproject_new',
+                array($this, 'admin_action_project_new')
+        );
+        add_submenu_page(
+                'kmtproject',
+                'Project groups',
+                'Project groups',
+                'manage_options',
+                'admin_action_project_groups',
+                array($this, 'admin_action_project_groups')
+        );
+        add_submenu_page(
+                'kmtproject',
+                'Detailled projects',
+                'New project\'s group',
+                'manage_options',
+                'admin_action_new_project_group',
+                array($this, 'admin_action_new_project_group')
+        );
+        add_submenu_page(
+            'kmtproject',
+            'Project menu',
+            'Project menu',
+            'manage_options',
+            'admin_action_project_menu',
+            array($this, 'admin_action_project_menu')
+        );
+        add_submenu_page(
+            'kmtproject',
+            'project menu',
+            'New project\'s menu',
+            'manage_options',
+            'admin_action_project_menu_new',
+            array($this, 'admin_action_project_menu_new')
+        );
     }
 
     public function config_page()
@@ -136,8 +169,55 @@ class AdminController
         <?php
     }
 
+    public function admin_action_project_menu(): void
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'kemet_projects_categories';
 
-    public function admin_action_project_groups()
+        if (isset($_GET['delete'])) {
+            $wpdb->query("DELETE FROM $table_name WHERE id = " . $_GET['delete']);
+            wp_redirect(self::REDIRECT_LiST_DETAILLED);
+        }
+
+        $results = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
+        ?>
+
+        <div class="wrap">
+            <div style="display: flex; justify-content: space-between">
+                <h1>Kemet Projects</h1>
+                <a class='button button-primary' href='admin.php?page=admin_action_project_menu_new'>Add a menu</a>
+            </div>
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                <tr>
+                    <th class="manage-column column-title column-primary">Title</th>
+                    <th class="manage-column column-title">short code</th>
+                    <th class="manage-column column-title">Création</th>
+                    <th class="manage-column column-title"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($results as $resultat): ?>
+                    <tr>
+                        <td><?= $resultat['title'] ?></td>
+                        <td>[<?= $resultat['short_code'] ?>]</td>
+                        <td><?= $resultat['created'] ?></td>
+                        <td>
+                            <a class='button' href="admin.php?page=admin_action_project_detaille&delete=<?= $resultat['id'] ?>">Delete</a>
+                        </td>
+                    </tr>
+
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+
+        </div>
+
+
+        <?php
+    }
+
+    public function admin_action_project_groups(): void
     {
         global $wpdb;
         $table_name = $wpdb->prefix . 'kemet_projects_groups';
@@ -147,10 +227,8 @@ class AdminController
             wp_redirect(self::REDIRECT_LiST_DETAILLED);
         }
 
-        $results = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
-
+        $results = $wpdb->query("SELECT * FROM $table_name", ARRAY_A);
         ?>
-
 
         <div class="wrap">
             <h1>Kemet Projects</h1>
@@ -284,7 +362,7 @@ class AdminController
         }
     }
 
-    public function admin_action_new_project_group()
+    public function admin_action_project_menu_new()
     {
 
         ?>
@@ -310,32 +388,17 @@ class AdminController
             }
         </style>
 
-        <form action="" enctype="multipart/form-data" method="post">
+        <form action=""  method="post">
             <div class="wrap">
                 <h1>Kemet Projects</h1>
 
                 <div style="display: flex;">
                     <div style="flex: 1">
                         <div class='form-group'>
-                            <label for='title'>title</label>
-                            <input type='text' class='form-control' id='title' name='title' placeholder='project title'>
+                            <label for='title'>Menu title </label>
+                            <input type='text' class='form-control' id='title' name='title' placeholder='menu title'>
                             <input type='hidden' name='form_type' value='ajout'>
                         </div>
-                        <div class='form-group'>
-                            <label for='description'>description</label>
-                            <textarea class='form-control' id='description' name='description' rows='3'></textarea>
-                        </div>
-
-
-                    </div>
-                    <div style="flex: 1">
-                        <div class='form-group'>
-                            <label for='cover'>image principale</label>
-                            <input type='file' class='form-control' id='cover' name='cover' placeholder='cover' required>
-                            <?php wp_nonce_field(plugin_basename(__FILE__), 'cover'); ?>
-                        </div>
-
-
                     </div>
 
                 </div>
@@ -346,32 +409,22 @@ class AdminController
         <?php
         if (isset($_POST['form_type']) && ($_POST['form_type'] === 'ajout')) {
             global $wpdb;
-            $table_name = $wpdb->prefix . 'kemet_projects_groups';
-            $table_name2 = $wpdb->prefix . 'kemet_projects_detailles_images';
+            $table_name =  $wpdb->prefix . 'kemet_projects_categories';
 
             $title = $_POST['title'];
-            $description = $_POST['description'];
 
-            $cover_file = $_FILES['cover'];
+            //remove special characters, spaces, replace accent by simple letter and make lowercase
+            $shortCode = strtolower(str_replace(' ', '_', preg_replace('/[^A-Za-z0-9\-]/', '', remove_accents($title))));
 
-            //upload images
-            $cover_url = wp_upload_bits($cover_file['name'], null, file_get_contents($cover_file['tmp_name']))['url'];
-
-
-            //add project to db
-
-            //create array of images
 
 
             $wpdb->query("INSERT INTO $table_name
-                        (title, description, cover, created)
+                        (title, short_code, created)
                         VALUES
-                            ('$title', '$description', '$cover_url', NOW())");
-            //get id of last inserted project
-           // $last_id = $wpdb->insert_id;
-            //add images to db
+                            ('$title', '$shortCode', NOW())");
 
-            echo "<script>location.replace('admin.php?page=admin_action_project_groups');</script>";
+
+            echo "<script>location.replace('admin.php?page=admin_action_project_menu');</script>";
 
         }
 
@@ -380,6 +433,10 @@ class AdminController
 
     public function admin_action_project_new()
     {
+        global $wpdb;
+        $table_name1 = $wpdb->prefix . 'kemet_projects_groups';
+
+        $results = $wpdb->get_results("SELECT * FROM $table_name1", ARRAY_A);
         ?>
         <style>
             .form-group input[type="text"], .form-group textarea {
@@ -401,55 +458,99 @@ class AdminController
                 margin: 5px;
                 text-transform: capitalize;
             }
+            .gr-6{
+                width: 50%;
+            }
+            .form-control-img{
+                justify-content: space-between;
+                padding: 5px;
+            }
         </style>
 
         <form action="" enctype="multipart/form-data" method="post">
             <div class="wrap">
                 <h1>Kemet Projects</h1>
 
-                <div class="form-group">
-                    <label for="title">title</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="project title">
-                    <input type="hidden" name="form_type" value="ajout">
-                </div>
-                <div class="form-group">
-                    <label for="description">description</label>
-                    <select name="description" id="description" class="form-control">
-                        <option value="designinterieur">Design interieur</option>
-                        <option value="projet">Projets</option>
-                        <option value="montage3d">Montage 3d</option>
-                    </select>
+                <div class="wrap" style="display: flex; flex-direction: row;">
+                    <div class='gr-6'>
+                        <div class='form-group'>
+                            <label for='name'>name</label>
+                            <input type='text' class='form-control' id='name' name='name' placeholder="project's name">
+                            <input type='hidden' name='form_type' value='ajout'>
+                        </div>
+                        <div class='form-group'>
+                            <label for='description'>Description</label>
+                            <textarea class='form-control' style='width: 100%; min-height: 200px;' id='description' name='description' placeholder="project's description"></textarea>
+                        </div>
+                        <div class='form-group'>
+                            <label for='group'>Group</label>
+                            <select name='group' id='group' class='form-control'>
+                                <?php foreach ($results as $result) { ?>
+                                    <option value="<?php echo $result['id']; ?>"><?php echo $result['title']; ?></option>
+                                <?php } ?>
+                            </select>
 
+                        </div>
+                        <div class="form-group">
+                            <label for="localisation">Location</label>
+                            <input type="text" class="form-control" id="localisation" name="localisation" placeholder="ville - pays">
+                        </div>
+                        <div class='form-group'>
+                            <label for='date'>Date</label>
+                            <input type='text' class='form-control' id='date' name='date' placeholder="start date">
+                        </div>
+                        <div class='form-group'>
+                            <label for='client'>Client</label>
+                            <input type='text' class='form-control' id='client' name='client' placeholder="client">
+                        </div>
+                        <div class='form-group'>
+                            <label for='taille'>size</label>
+                            <input type='text' class='form-control' id='taille' name='taille' placeholder="ground's surface">
+                        </div>
+                    </div>
+                    <div class='gr-6'>
+                        <div class='form-group form-control-img'>
+                            <label for='img1'>image principale</label>
+                            <input type='file' class='form-control' id='img1' name='img1' placeholder='img1' required>
+                            <?php wp_nonce_field(plugin_basename(__FILE__), 'img1'); ?>
+                        </div>
+                        <div class="form-group form-control-img">
+                            <label for="img2">image 2</label>
+                            <input type="file" class="form-control" id="img2" name="img2" placeholder="img2" required>
+                            <?php wp_nonce_field(plugin_basename(__FILE__), 'img2'); ?>
+                        </div>
+                        <div class="form-group form-control-img">
+                            <label for="img3">image 3</label>
+                            <input type="file" class="form-control" id="img3" name="img3" placeholder="img3" required>
+                            <?php wp_nonce_field(plugin_basename(__FILE__), 'img3'); ?>
+                        </div>
+                        <div class="form-group form-control-img">
+                            <label for="img4">image 4</label>
+                            <input type="file" class="form-control" id="img4" name="img4" placeholder="img4">
+                            <?php wp_nonce_field(plugin_basename(__FILE__), 'img4'); ?>
+                        </div>
+                        <div class="form-group form-control-img">
+                            <label for="img5">image 5</label>
+                            <input type="file" class="form-control" id="img5" name="img5" placeholder="img5">
+                            <?php wp_nonce_field(plugin_basename(__FILE__), 'img5'); ?>
+                        </div>
+                        <div class='form-group form-control-img'>
+                            <label for='img6'>image 5</label>
+                            <input type='file' class='form-control' id='img6' name='img6' placeholder='img6'>
+                            <?php wp_nonce_field(plugin_basename(__FILE__), 'img6'); ?>
+                        </div>
+                        <div class='form-group form-control-img'>
+                            <label for='img7'>image 5</label>
+                            <input type='file' class='form-control' id='img7' name='img7' placeholder='img7'>
+                            <?php wp_nonce_field(plugin_basename(__FILE__), 'img7'); ?>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="localisation">localisation</label>
-                    <input type="text" class="form-control" id="localisation" name="localisation" placeholder="ville - pays">
-                </div>
-                <div class="form-group">
-                    <label for="img1">image principale</label>
-                    <input type="file" class="form-control" id="img1" name="img1" placeholder="img1" required>
-                    <?php wp_nonce_field(plugin_basename(__FILE__), 'img1'); ?>
-                </div>
-                <div class="form-group">
-                    <label for="img2">image 2</label>
-                    <input type="file" class="form-control" id="img2" name="img2" placeholder="img2" required>
-                    <?php wp_nonce_field(plugin_basename(__FILE__), 'img2'); ?>
-                </div>
-                <div class="form-group">
-                    <label for="img3">image 3</label>
-                    <input type="file" class="form-control" id="img3" name="img3" placeholder="img3" required>
-                    <?php wp_nonce_field(plugin_basename(__FILE__), 'img3'); ?>
-                </div>
-                <div class="form-group">
-                    <label for="img4">image 4</label>
-                    <input type="file" class="form-control" id="img4" name="img4" placeholder="img4">
-                    <?php wp_nonce_field(plugin_basename(__FILE__), 'img4'); ?>
-                </div>
-                <div class="form-group">
-                    <label for="img5">image 5</label>
-                    <input type="file" class="form-control" id="img5" name="img5" placeholder="img5">
-                    <?php wp_nonce_field(plugin_basename(__FILE__), 'img5'); ?>
-                </div>
+
+
+
+
+
                 <button type="submit" class="button button-primary">Enregistrer</button>
             </div>
         </form>
@@ -459,14 +560,22 @@ class AdminController
             global $wpdb;
             $table_name = $wpdb->prefix . 'kemet_projects';
 
-            $title = $_POST['title'];
+            $name = $_POST['name'];
             $description = $_POST['description'];
             $localisation = $_POST['localisation'];
+            $date = $_POST['date'];
+            $client = $_POST['client'];
+            $taille = $_POST['taille'];
+            $group = $_POST['group'];
+
             $img1_file = $_FILES['img1'];
             $img2_file = $_FILES['img2'];
             $img3_file = $_FILES['img3'];
             $img4_file = $_FILES['img4'];
             $img5_file = $_FILES['img5'];
+            $img6_file = $_FILES['img6'];
+            $img7_file = $_FILES['img7'];
+
 
             //upload images
             $img1_url = wp_upload_bits($img1_file['name'], null, file_get_contents($img1_file['tmp_name']))['url'];
@@ -474,16 +583,127 @@ class AdminController
             $img3_url = wp_upload_bits($img3_file['name'], null, file_get_contents($img3_file['tmp_name']))['url'];
             $img4_url = ($img4_file['name'] !== '' && $img4_file !== null) ? wp_upload_bits($img4_file['name'], null, file_get_contents($img4_file['tmp_name']))['url'] : '';
             $img5_url = ($img5_file['name'] !== '' && $img5_file !== null) ? wp_upload_bits($img5_file['name'], null, file_get_contents($img5_file['tmp_name']))['url'] : '';
+            $img6_url = ($img6_file['name'] !== '' && $img6_file !== null) ? wp_upload_bits($img6_file['name'], null, file_get_contents($img6_file['tmp_name']))['url'] : '';
+            $img7_url = ($img7_file['name'] !== '' && $img7_file !== null) ? wp_upload_bits($img7_file['name'], null, file_get_contents($img7_file['tmp_name']))['url'] : '';
 
+            $wpdb->show_errors(true);
 
             //add project to db
 
 
             $wpdb->query("INSERT INTO $table_name
-                        (name, description, localisation, img1, img2, img3, img4, img5, created)
+                        (name, description, localisation, date, client, taille, group_id, img1, img2, img3, img4, img5, img6, img7, created)
                         VALUES
-                            ('$title', '$description', '$localisation', '$img1_url', '$img2_url', '$img3_url', '$img4_url', '$img5_url', NOW())");
+                            ('$name', '$description', '$localisation', '$date', '$client', '$taille', '$group',
+                             '$img1_url', '$img2_url', '$img3_url', '$img4_url', '$img5_url', '$img6_url', '$img7_url',
+                             NOW() )");
+
+
             echo "<script>location.replace('admin.php?page=kmtproject');</script>";
+
+            var_dump($wpdb->last_error);
+            die();
+
+        }
+
+
+    }
+
+
+    public function admin_action_new_project_group()
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'kemet_projects_categories';
+        $table_name1 = $wpdb->prefix . 'kemet_projects_groups';
+
+        if (isset($_GET['delete'])) {
+            $wpdb->query("DELETE FROM $table_name1 WHERE id = " . $_GET['delete']);
+            wp_redirect(self::REDIRECT_LiST_DETAILLED);
+        }
+
+        $results = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
+        ?>
+        <style>
+            .form-group input[type="text"], .form-group textarea {
+                border: 1px solid #ccc;
+                padding: 2px;
+                border-radius: 5px;
+            }
+
+            .form-group input {
+                width: 40%;
+            }
+
+            .form-group {
+                margin: 5px;
+                display: flex;
+            }
+
+            .form-group label {
+                margin: 5px;
+                text-transform: capitalize;
+            }
+        </style>
+
+        <form action="" enctype="multipart/form-data" method="post">
+            <div class="wrap">
+                <h1>Kemet Project's Group</h1>
+
+                <div class="form-group">
+                    <label for="title">title</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="project title">
+                    <input type="hidden" name="form_type" value="ajout">
+                </div>
+                <div class="form-group">
+                    <label for="description">description</label>
+                    <textarea name="description" id="description" class="form-control" style="width: 100%; min-height: 200px;"></textarea>
+
+                </div>
+                <div class='form-group'>
+                    <label for='menu'>description</label>
+                    <select name='menu' id='menu' class='form-control'>
+                        <?php foreach ($results as $result) { ?>
+                            <option value='<?php echo $result['id']; ?>'><?php echo $result['title']; ?></option>
+                        <?php } ?>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="img1">image principale</label>
+                    <input type="file" class="form-control" id="img1" name="img1" placeholder="img1" required>
+                    <?php wp_nonce_field(plugin_basename(__FILE__), 'img1'); ?>
+                </div>
+
+                <button type="submit" class="button button-primary">Enregistrer</button>
+            </div>
+        </form>
+
+        <?php
+        if (isset($_POST['form_type']) && ($_POST['form_type'] === 'ajout')) {
+            global $wpdb;
+
+            $table_name = $wpdb->prefix . 'kemet_projects_groups';
+
+            $title = $_POST['title'];
+            $description = $_POST['description'];
+            $menu = $_POST['menu'];
+            $img1_file = $_FILES['img1'];
+
+            //upload images
+            $img1_url = wp_upload_bits($img1_file['name'], null, file_get_contents($img1_file['tmp_name']))['url'];
+            $wpdb->show_errors();
+
+            //add project to db
+
+
+            $wpdb->query("INSERT INTO $table_name
+                        (title, description, menu_id, cover, created)
+                        VALUES
+                            ('$title', '$description', '$menu', '$img1_url', NOW())");
+
+            echo "<script>location.replace('admin.php?page=admin_action_project_groups');</script>";
 
         }
 
