@@ -218,7 +218,7 @@ class AdminController
                 <?php foreach ($results as $resultat): ?>
                     <tr>
                         <td><?= $resultat['title'] ?></td>
-                        <td>[<?= $resultat['short_code'] ?>]</td>
+                        <td>[kemet_projects title='<?= $resultat['short_code'] ?>']</td>
                         <td><?= $resultat['created'] ?></td>
                         <td>
                             <a class='button' href="admin.php?page=admin_action_project_detaille&delete=<?= $resultat['id'] ?>">Delete</a>
