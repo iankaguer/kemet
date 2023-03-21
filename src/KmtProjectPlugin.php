@@ -80,7 +80,6 @@ class KmtProjectPlugin
         $sql1 = "CREATE TABLE IF NOT EXISTS $table_name1 (
 			`id` int(20) NOT NULL AUTO_INCREMENT,
             `title` varchar(254) NOT NULL,
-			`description` text,
 			`cover` text,
 			`created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (`id`),

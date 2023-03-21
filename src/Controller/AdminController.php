@@ -126,7 +126,8 @@ class AdminController
 
         if (isset($_GET['delete'])) {
             $wpdb->query("DELETE FROM $table_name WHERE id = " . $_GET['delete']);
-            wp_redirect(self::REDIRECT_LIST_PAGE);
+            //wp_redirect(self::REDIRECT_LIST_PAGE);
+            echo "<script>location.replace('admin.php?page=kmtproject');</script>";
         }
 
         $result = $wpdb->get_results("SELECT t1.*, t2.title 
@@ -194,7 +195,8 @@ class AdminController
 
         if (isset($_GET['delete'])) {
             $wpdb->query("DELETE FROM $table_name WHERE id = " . $_GET['delete']);
-            wp_redirect(self::REDIRECT_LiST_DETAILLED);
+            //wp_redirect(self::REDIRECT_LiST_DETAILLED);
+            echo "<script>location.replace('admin.php?page=admin_action_project_menu');</script>";
         }
 
         $results = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
@@ -221,7 +223,7 @@ class AdminController
                         <td>[kemet_projects title='<?= $resultat['short_code'] ?>']</td>
                         <td><?= $resultat['created'] ?></td>
                         <td>
-                            <a class='button' href="admin.php?page=admin_action_project_detaille&delete=<?= $resultat['id'] ?>">Delete</a>
+                            <a class='button' href="admin.php?page=admin_action_project_menu&delete=<?= $resultat['id'] ?>">Delete</a>
                         </td>
                     </tr>
 
@@ -243,7 +245,8 @@ class AdminController
 
         if (isset($_GET['delete'])) {
             $wpdb->query("DELETE FROM $table_name WHERE id = " . $_GET['delete']);
-            wp_redirect(self::REDIRECT_LiST_DETAILLED);
+            //wp_redirect(self::REDIRECT_LiST_DETAILLED);
+            echo "<script>location.replace('admin.php?page=admin_action_project_groups');</script>";
         }
 
         $results = $wpdb->get_results("SELECT t1.*, t2.title as menu 
@@ -259,7 +262,6 @@ class AdminController
                 <thead>
                 <tr>
                     <th class="manage-column column-title column-primary">Title</th>
-                    <th class="manage-column column-title">Description</th>
                     <th class='manage-column column-title'>Menu</th>
                     <th class='manage-column column-title'>Couverture</th>
 
@@ -271,12 +273,11 @@ class AdminController
                 <?php foreach ($results as $resultat): ?>
                     <tr>
                         <td><?= $resultat['title'] ?></td>
-                        <td><?= $resultat['description'] ?></td>
                         <td><?= $resultat['menu'] ?></td>
                         <td><img src="<?= $resultat['cover'] ?>" style='width: 100px; height: auto;' alt=""/></td>
                         <td><?= $resultat['created'] ?></td>
                         <td>
-                            <a class='button' href="admin.php?page=admin_action_project_detaille&delete=<?= $resultat['id'] ?>">Delete</a>
+                            <a class='button' href="admin.php?page=admin_action_project_groups&delete=<?= $resultat['id'] ?>">Delete</a>
                         </td>
                     </tr>
 
@@ -581,11 +582,7 @@ class AdminController
                     <input type="text" class="form-control" id="title" name="title" placeholder="project title">
                     <input type="hidden" name="form_type" value="ajout">
                 </div>
-                <div class="form-group">
-                    <label for="description">description</label>
-                    <textarea name="description" id="description" class="form-control" style="width: 100%; min-height: 200px;"></textarea>
 
-                </div>
                 <div class='form-group'>
                     <label for='menu'>description</label>
                     <select name='menu' id='menu' class='form-control'>
@@ -614,7 +611,6 @@ class AdminController
             $table_name = $wpdb->prefix . 'kemet_projects_groups';
 
             $title = $_POST['title'];
-            $description = $_POST['description'];
             $menu = $_POST['menu'];
             $img1_file = $_FILES['img1'];
 
@@ -626,9 +622,9 @@ class AdminController
 
 
             $wpdb->query("INSERT INTO $table_name
-                        (title, description, menu_id, cover, created)
+                        (title,  menu_id, cover, created)
                         VALUES
-                            ('$title', '$description', '$menu', '$img1_url', NOW())");
+                            ('$title', '$menu', '$img1_url', NOW())");
 
             echo "<script>location.replace('admin.php?page=admin_action_project_groups');</script>";
 

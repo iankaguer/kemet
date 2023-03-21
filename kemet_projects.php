@@ -40,13 +40,13 @@ function kmt_projects($atts=[]){
         //get only one
         $menu = $wpdb->get_row("SELECT * FROM $table_name2 WHERE short_code = '$title'", ARRAY_A);
 
-        $cats = $wpdb->get_results("SELECT * FROM $table_name1 WHERE menu_id =  ". $menu['id'], ARRAY_A);
+        $cats = $wpdb->get_results("SELECT * FROM $table_name1 WHERE menu_id=". $menu['id']." ORDER BY id DESC ", ARRAY_A);
 
         $categories =[];
         foreach ($cats as $category) {
             $cat = $category;
             $cat['projects'] = $wpdb->get_results(
-                    "SELECT * FROM $table_name WHERE group_id = " . $category['id'],
+                    "SELECT * FROM $table_name WHERE group_id = " . $category['id'] . ' ORDER BY id DESC ',
                     ARRAY_A
             );
             $categories[] = $cat;
