@@ -465,12 +465,12 @@ class AdminController
                             <?php wp_nonce_field(plugin_basename(__FILE__), 'img5'); ?>
                         </div>
                         <div class='form-group form-control-img'>
-                            <label for='img6'>image 5</label>
+                            <label for='img6'>image 6</label>
                             <input type='file' class='form-control' id='img6' name='img6' placeholder='img6'>
                             <?php wp_nonce_field(plugin_basename(__FILE__), 'img6'); ?>
                         </div>
                         <div class='form-group form-control-img'>
-                            <label for='img7'>image 5</label>
+                            <label for='img7'>image 7</label>
                             <input type='file' class='form-control' id='img7' name='img7' placeholder='img7'>
                             <?php wp_nonce_field(plugin_basename(__FILE__), 'img7'); ?>
                         </div>
