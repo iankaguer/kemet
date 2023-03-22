@@ -84,8 +84,8 @@ function kmt_projects($atts = [])
             .kp-group-pop-up {
                 z-index: 110000;
                 position: absolute;
-                top: 0;
-                left: 0;
+                /*top: 0;*/
+                /*left: 0;*/
                 bottom: 0;
                 right: 0;
                 width: 100vw;
@@ -95,6 +95,9 @@ function kmt_projects($atts = [])
                 flex-direction: column;
                 align-items: center;
                 overflow-y: auto;
+
+                top: -165px;
+                left: -42px;
             }
 
             .kp-group-pop-up-content-project {

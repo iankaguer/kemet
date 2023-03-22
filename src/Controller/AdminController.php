@@ -346,6 +346,10 @@ class AdminController
             //remove special characters, spaces, replace accent by simple letter and make lowercase
             $shortCode = strtolower(str_replace(' ', '_', preg_replace('/[^A-Za-z0-9\-]/', '', remove_accents($title))));
 
+            $exists = $wpdb->get_results("SELECT * FROM $table_name WHERE short_code = '$shortCode'", ARRAY_A);
+            if (count($exists) > 0) {
+                $shortCode = $shortCode . '_' . count($exists);
+            }
 
             $wpdb->query("INSERT INTO $table_name
                         (title, short_code, created)
