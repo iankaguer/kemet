@@ -163,7 +163,10 @@ class AdminController
                             <div>Created : <strong><?= $row->created ?></strong></div>
 
                         </td>
-                        <td><?= $row->description ?></td>
+                        <td >
+
+                            <p style="text-overflow: ellipsis; height: 120px; overflow: hidden;"><?= $row->description ?></p>
+                        </td>
                         <td><img src="<?= $row->img1 ?>" style="width: 100px; height: auto;" alt=""/></td>
                         <td>
                             <img src="<?= $row->img2 ?>" style='width: 50px; height: auto;' alt=""/>
@@ -489,6 +492,7 @@ class AdminController
 
         <?php
         if (isset($_POST['form_type']) && ($_POST['form_type'] === 'ajout')) {
+
             global $wpdb;
             $table_name = $wpdb->prefix . 'kemet_projects';
 
@@ -518,7 +522,7 @@ class AdminController
             $img6_url = ($img6_file['name'] !== '' && $img6_file !== null) ? wp_upload_bits($img6_file['name'], null, file_get_contents($img6_file['tmp_name']))['url'] : '';
             $img7_url = ($img7_file['name'] !== '' && $img7_file !== null) ? wp_upload_bits($img7_file['name'], null, file_get_contents($img7_file['tmp_name']))['url'] : '';
 
-            $wpdb->show_errors(true);
+            $wpdb->show_errors();
 
             //add project to db
 
