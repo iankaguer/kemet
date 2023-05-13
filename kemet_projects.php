@@ -1,7 +1,7 @@
 <?php
 /**
  * @package Kemet_Theme
- * @version 1.0.0
+ * @version 2.0.0
  */
 
 /*
@@ -59,7 +59,7 @@ function display_di_projects(mixed $title)
                 display: flex;
                 flex-wrap: nowrap;
                 justify-content: space-between;
-                margin: 0px auto;
+                margin: 0 auto;
                 flex-direction: row;
                 align-items: flex-start;
                 overflow-x: auto;
@@ -134,6 +134,10 @@ function display_di_projects(mixed $title)
             .project-container-wrapper{
                 width: 100%;
                 position: relative;
+                overflow-x: auto;
+            }
+            .project-container-wrapper::-webkit-scrollbar {
+                display: none;
             }
 
             .kp-project {
