@@ -1193,7 +1193,7 @@ function kmt_projects($atts = [])
 
 // Search for the [kemet_projects] shortcode
     if (isset($atts['title'])) {
-        return display_projects($atts['title']);
+        return display_di_projects($atts['title']);
 //       if (strtolower($atts['title']) == 'designinterieur') {
 //           return display_di_projects($atts['title']);
 //       } else {
